@@ -12,6 +12,7 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb; 
     public int count;
     public TextMeshProUGUI countText;
+    public GameObject winTextObject;
 
     // Movement along X and Y axes.
     private float movementX;
@@ -29,6 +30,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         count = 0;
         SetCountText();
+        winTextObject.SetActive(false);
 
         posicionInicial = transform.position;
     }
@@ -46,6 +48,10 @@ public class PlayerController : MonoBehaviour
     void SetCountText() 
    {
        countText.text =  "Count: " + count.ToString();
+       if (count >= 8)
+       {
+           winTextObject.SetActive(true);
+       }
    }
 
     // FixedUpdate is called once per fixed frame-rate frame.
