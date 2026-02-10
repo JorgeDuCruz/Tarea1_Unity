@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using TMPro;
+
 
 public class PlayerController : MonoBehaviour
 {
     // Rigidbody of the player.
     private Rigidbody rb; 
+    public int count;
+    public TextMeshProUGUI countText;
 
     // Movement along X and Y axes.
     private float movementX;
@@ -23,6 +27,8 @@ public class PlayerController : MonoBehaviour
     {
         // Get and store the Rigidbody component attached to the player.
         rb = GetComponent<Rigidbody>();
+        count = 0;
+        SetCountText();
 
         posicionInicial = transform.position;
     }
@@ -37,6 +43,10 @@ public class PlayerController : MonoBehaviour
         movementX = movementVector.x; 
         movementY = movementVector.y; 
     }
+    void SetCountText() 
+   {
+       countText.text =  "Count: " + count.ToString();
+   }
 
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate() 
@@ -53,6 +63,8 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp")) 
         {
             other.gameObject.SetActive(false);
+            count += 1;
+            SetCountText();
         }
 
         if (other.gameObject.CompareTag("Portal"))
