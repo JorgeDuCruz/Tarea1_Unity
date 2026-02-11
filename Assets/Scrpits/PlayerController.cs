@@ -4,6 +4,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
+using System;
 
 
 public class PlayerController : MonoBehaviour
@@ -11,7 +12,11 @@ public class PlayerController : MonoBehaviour
     // Rigidbody of the player.
     private Rigidbody rb; 
     public int count;
+    private float time;
+    private float bestTime;
     public TextMeshProUGUI countText;
+    public TextMeshProUGUI timeText;
+    public TextMeshProUGUI bestText;
     public GameObject winTextObject;
 
     // Movement along X and Y axes.
@@ -27,9 +32,14 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         // Get and store the Rigidbody component attached to the player.
+        Debug.Log("Player");
         rb = GetComponent<Rigidbody>();
-        count = 0;
+        count = 12;
+        time = 0;
+        //bestTime = PlayerPrefs.GetFloat("Best",5);
+        bestTime = 5;
         SetCountText();
+        setBestTime();
         winTextObject.SetActive(false);
 
         posicionInicial = transform.position;
@@ -48,18 +58,48 @@ public class PlayerController : MonoBehaviour
     void SetCountText() 
    {
        countText.text =  "Count: " + count.ToString();
-       if (count >= 12)
+       if (count <= 0)
        {
            winTextObject.SetActive(true);
+           checkBestTime();
            Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+           GameManager.gameController.ActivarEstadoEspera();
        }
    }
+
+    private void checkBestTime()
+    {
+        if (time < bestTime)
+        {
+            bestTime = time;
+            setBestTime();
+        }
+    }
+
+    private void setBestTime()
+    {
+        bestText.text = "Joder : "+bestTime.ToString("F2")+ " Pepe";
+        PlayerPrefs.SetFloat("Best",bestTime);
+        PlayerPrefs.Save();
+    }
+
+    void setTimeTetxt()
+    {
+        timeText.text = "Time: "+time.ToString("F2");
+    }
 
     // FixedUpdate is called once per fixed frame-rate frame.
     private void FixedUpdate() 
     {
         // Create a 3D movement vector using the X and Y inputs.
         Vector3 movement = new Vector3 (movementX, 0.0f, movementY);
+        time += 0.02F;
+        setTimeTetxt();
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            print("Presionando");
+            checkBestTime();
+        }
 
         // Apply force to the Rigidbody to move the player.
         rb.AddForce(movement * speed); 
@@ -70,7 +110,7 @@ public class PlayerController : MonoBehaviour
         if (other.gameObject.CompareTag("PickUp")) 
         {
             other.gameObject.SetActive(false);
-            count += 1;
+            count -= 1;
             SetCountText();
         }
 
@@ -85,11 +125,13 @@ public class PlayerController : MonoBehaviour
 {
    if (collision.gameObject.CompareTag("Enemy"))
    {
-       // Destroy the current object
-       Destroy(gameObject); 
+       
        // Update the winText to display "You Lose!"
        winTextObject.gameObject.SetActive(true);
        winTextObject.GetComponent<TextMeshProUGUI>().text = "You Lose!";
+       // Destroy the current object
+       GameManager.gameController.ActivarEstadoEspera();
+       this.gameObject.SetActive(false);
    }
 }
 }
