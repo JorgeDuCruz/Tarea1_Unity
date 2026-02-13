@@ -4,6 +4,7 @@ using UnityEngine.SceneManagement; // Necesario para reiniciar la escena
 public class GameManager : MonoBehaviour
 {
     public static GameManager gameController;
+    public static float bestTime = 0;
     private bool esperandoReinicio = false;
 
     void Start()

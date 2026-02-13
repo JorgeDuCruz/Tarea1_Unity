@@ -36,8 +36,7 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         count = 12;
         time = 0;
-        //bestTime = PlayerPrefs.GetFloat("Best",5);
-        bestTime = 5;
+        bestTime = GameManager.bestTime;
         SetCountText();
         setBestTime();
         winTextObject.SetActive(false);
@@ -69,7 +68,7 @@ public class PlayerController : MonoBehaviour
 
     private void checkBestTime()
     {
-        if (time < bestTime)
+        if (time < bestTime || bestTime == 0)
         {
             bestTime = time;
             setBestTime();
@@ -78,9 +77,9 @@ public class PlayerController : MonoBehaviour
 
     private void setBestTime()
     {
-        bestText.text = "Joder : "+bestTime.ToString("F2")+ " Pepe";
-        PlayerPrefs.SetFloat("Best",bestTime);
-        PlayerPrefs.Save();
+        bestText.text = "Best : "+bestTime.ToString("F2");
+        GameManager.bestTime = bestTime;
+        
     }
 
     void setTimeTetxt()
