@@ -61,7 +61,12 @@ public class PlayerController : MonoBehaviour
        {
            winTextObject.SetActive(true);
            checkBestTime();
-           Destroy(GameObject.FindGameObjectWithTag("Enemy"));
+           GameObject[] enemys = GameObject.FindGameObjectsWithTag("Enemy");
+           foreach (GameObject e in enemys)
+            {
+                Destroy(e);     
+            }
+           
            GameManager.gameController.ActivarEstadoEspera();
        }
    }
